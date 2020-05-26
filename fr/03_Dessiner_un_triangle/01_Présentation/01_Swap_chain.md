@@ -201,7 +201,7 @@ VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>
 ```
 
 Chaque `VkSurfaceFormatKHR` contient les données `format` et `colorSpace`. Le `format` indique les canaux de couleur
-disponibles et les types qui contient les valeurs des gradients. Par exemple `VK_FORMAT_B8G8R8A8_SRGB` signifie que
+disponibles et les types qui contiennent les valeurs des gradients. Par exemple `VK_FORMAT_B8G8R8A8_SRGB` signifie que
 nous stockons les canaux de couleur R, G, B et A dans cet ordre et en entiers non signés de 8 bits. `colorSpace` permet
 de vérifier que le sRGB est supporté en utilisant le champ de bits `VK_COLOR_SPACE_SRGB_NONLINEAR_KHR`.
 
