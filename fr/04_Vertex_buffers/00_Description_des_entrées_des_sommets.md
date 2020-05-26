@@ -1,6 +1,6 @@
 ## Introduction
 
-Dans les quatres prochains chapitres nous allons remplacer les sommets inscrits dans le vertex shader par un vertex
+Dans les quatre prochains chapitres nous allons remplacer les sommets inscrits dans le vertex shader par un vertex
 buffer stocké dans la mémoire de la carte graphique. Nous commencerons par une manière simple de procéder en créant un
 buffer manipulable depuis le CPU et en y copiant des données avec `memcpy`. Puis nous verrons comment avantageusement
 utiliser un *staging buffer* pour accéder à de la mémoire de haute performance.
@@ -94,7 +94,7 @@ struct Vertex {
     glm::vec3 color;
 
     static VkVertexInputBindingDescription getBindingDescription() {
-        VkVertexInputBindingDescription bindingDescription{};
+        VkVertexInputBindingDescription bindingDescription = {};
 
         return bindingDescription;
     }
@@ -106,7 +106,7 @@ données et la manière de passer d'un ensemble de données (par exemple une coo
 de savoir comment extraire chaque jeu de données correspondant à une invocation du vertex shader du vertex buffer.
 
 ```c++
-VkVertexInputBindingDescription bindingDescription{};
+VkVertexInputBindingDescription bindingDescription = {};
 bindingDescription.binding = 0;
 bindingDescription.stride = sizeof(Vertex);
 bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
@@ -118,8 +118,8 @@ séparant les débuts de deux ensembles de données, c'est à dire l'écart entr
 invocation de vertex shader et celles devant être fournies à la suivante. Enfin `inputRate` peut prendre les valeurs
 suivantes :
 
-* `VK_VERTEX_INPUT_RATE_VERTEX`: Passer au jeu de données suivante après chaque sommet
-* `VK_VERTEX_INPUT_RATE_INSTANCE`: Passer au jeu de données suivantes après chaque instance
+* `VK_VERTEX_INPUT_RATE_VERTEX` : Passer au jeu de données suivante après chaque sommet
+* `VK_VERTEX_INPUT_RATE_INSTANCE` : Passer au jeu de données suivantes après chaque instance
 
 Nous n'utilisons pas d'*instanced rendering* donc nous utiliserons `VK_VERTEX_INPUT_RATE_VERTEX`.
 
@@ -134,7 +134,7 @@ instances depuis une fonction membre de `Vertex` :
 ...
 
 static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions() {
-    std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
+    std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions = {};
 
     return attributeDescriptions;
 }
@@ -181,7 +181,7 @@ bits
 Le paramètre `format` définit implicitement la taille en octets des données. Mais le binding extrait dans notre cas deux
 données pour chaque sommet : la position et la couleur. Pour savoir quels octets doivent être mis dans la variable à
 laquelle la structure correspond, le paramètre `offset` permet d'indiquer de combien d'octets il faut se décaler dans
-les données extraites pour se trouver au début de la variable. Ce décalage est calculé automatiquement par la macro
+les données extraites pour se trouver au début de la variable. Ce décalage est calculé automatiquement par la macro 
 `offsetof`.
 
 L'attribut de couleur est décrit de la même façon. Essayez de le remplir avant de regarder la solution ci-dessous.

@@ -18,7 +18,7 @@ struct Vertex {
     ...
 
     static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions() {
-        std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
+        std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions = {};
 
         attributeDescriptions[0].binding = 0;
         attributeDescriptions[0].location = 0;
@@ -61,7 +61,7 @@ second carré soit rendu au-dessus de celui que nous avons maintenant :
 
 ![](/images/extra_square.svg)
 
-Nous allons utiliser `-0.5f` comme coodonnée Z.
+Nous allons utiliser `-0.5f` comme coordonnée Z.
 
 ```c++
 const std::vector<Vertex> vertices = {
@@ -121,7 +121,7 @@ VkDeviceMemory depthImageMemory;
 VkImageView depthImageView;
 ```
 
-Créez une nouvelle fonction `createDepthResources` pour mettre en place ces ressource :
+Créez une nouvelle fonction `createDepthResources` pour mettre en place ces ressources :
 
 ```c++
 void initVulkan() {
@@ -149,15 +149,15 @@ Au contraire de l'image de texture, nous n'avons pas besoin de déterminer le fo
 cette texture nous-mêmes. Nous n'avons besoin que d'une précision suffisante, en général un minimum de 24 bits. Il y a
 plusieurs formats qui satisfont cette nécéssité :
 
-* `VK_FORMAT_D32_SFLOAT`: float signé de 32 bits pour la profondeur
-* `VK_FORMAT_D32_SFLOAT_S8_UINT`: float signé de 32 bits pour la profondeur et int non signé de 8 bits pour le stencil
-* `VK_FORMAT_D24_UNORM_S8_UINT`: float signé de 24 bits pour la profondeur et int non signé de 8 bits pour le stencil
+* `VK_FORMAT_D32_SFLOAT` : float signé de 32 bits pour la profondeur
+* `VK_FORMAT_D32_SFLOAT_S8_UINT` : float signé de 32 bits pour la profondeur et int non signé de 8 bits pour le stencil
+* `VK_FORMAT_D24_UNORM_S8_UINT` : float signé de 24 bits pour la profondeur et int non signé de 8 bits pour le stencil
 
 Le composant de stencil est utilisé pour le [test de stencil](https://en.wikipedia.org/wiki/Stencil_buffer). C'est un
 test additionnel qui peut être combiné avec le test de profondeur. Nous y reviendrons dans un futur chapitre.
 
 Nous pourrions nous contenter d'utiliser `VK_FORMAT_D32_SFLOAT` car son support est pratiquement assuré, mais il est
-préférable d'utiliser une fonction pour déterminer le meilleur format localement supporté. Créez pour cela la fonction
+préférable d'utiliser une fonction pour déterminer le meilleur format localement supporté. Créez pour cela la fonction 
 `findSupportedFormat`. Elle vérifiera que les formats en argument sont supportés et choisira le meilleur en se basant
 sur leur ordre dans le vecteurs des formats acceptables fourni en argument :
 
@@ -179,9 +179,9 @@ for (VkFormat format : candidates) {
 
 La structure `VkFormatProperties` contient trois champs :
 
-* `linearTilingFeatures`: utilisations supportées avec le tiling linéaire
-* `optimalTilingFeatures`: utilisations supportées avec le tiling optimal
-* `bufferFeatures`: utilisations supportées avec les buffers
+* `linearTilingFeatures` : utilisations supportées avec le tiling linéaire
+* `optimalTilingFeatures` : utilisations supportées avec le tiling optimal
+* `bufferFeatures` : utilisations supportées avec les buffers
 
 Seuls les deux premiers cas nous intéressent ici, et celui que nous vérifierons dépendra du mode de tiling fourni en
 paramètre.
@@ -226,7 +226,7 @@ VkFormat findDepthFormat() {
 }
 ```
 
-Utilisez bien `VK_FORMAT_FEATURE_` au lieu de `VK_IMAGE_USAGE_`. Tous les candidats contiennet la profondeur, mais
+Utilisez bien `VK_FORMAT_FEATURE_` au lieu de `VK_IMAGE_USAGE_`. Tous les candidats contiennent la profondeur, mais
 certains ont le stencil en plus. Ainsi il est important de voir que dans ce cas, la profondeur n'est qu'une *capacité*
 et non un *usage* exclusif. Autre point, nous devons prendre cela en compte pour les transitions d'organisation. Ajoutez
 une fonction pour determiner si le format contient un composant de stencil ou non :
@@ -287,7 +287,7 @@ transitionImageLayout(depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMA
 ```
 
 L'organisation indéfinie peut être utilisée comme organisation intiale, dans la mesure où aucun contenu d'origine n'a
-d'importance. Nous devons devons faire évaluer la logique de `transitionImageLayout` pour qu'elle puisse utiliser la
+d'importance. Nous devons faire évaluer la logique de `transitionImageLayout` pour qu'elle puisse utiliser la
 bonne subresource.
 
 ```c++
@@ -342,7 +342,7 @@ Nous allons modifier `createRenderPass` pour inclure l'attachement de profondeur
 `VkAttachementDescription` :
 
 ```c++
-VkAttachmentDescription depthAttachment{};
+VkAttachmentDescription depthAttachment = {};
 depthAttachment.format = findDepthFormat();
 depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -353,13 +353,13 @@ depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 ```
 
-La `format` doit être celui de l'image de profondeur. Pour cette fois nous ne garderons pas les données de profondeur,
+Le `format` doit être celui de l'image de profondeur. Pour cette fois nous ne garderons pas les données de profondeur,
 car nous n'en avons plus besoin après le rendu. Encore une fois le hardware pourra réaliser des optimisations. Et
 de même nous n'avons pas besoin des valeurs du rendu précédent pour le début du rendu de la frame, nous pouvons donc
 mettre `VK_IMAGE_LAYOUT_UNDEFINED` comme valeur pour `initialLayout`.
 
 ```c++
-VkAttachmentReference depthAttachmentRef{};
+VkAttachmentReference depthAttachmentRef = {};
 depthAttachmentRef.attachment = 1;
 depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 ```
@@ -367,7 +367,7 @@ depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 Ajoutez une référence à l'attachement dans notre seule et unique subpasse :
 
 ```c++
-VkSubpassDescription subpass{};
+VkSubpassDescription subpass = {};
 subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 subpass.colorAttachmentCount = 1;
 subpass.pColorAttachments = &colorAttachmentRef;
@@ -379,7 +379,7 @@ sur plusieurs buffers n'a de toute façon pas beaucoup de sens.
 
 ```c++
 std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
-VkRenderPassCreateInfo renderPassInfo{};
+VkRenderPassCreateInfo renderPassInfo = {};
 renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 renderPassInfo.pAttachments = attachments.data();
@@ -402,7 +402,7 @@ std::array<VkImageView, 2> attachments = {
     depthImageView
 };
 
-VkFramebufferCreateInfo framebufferInfo{};
+VkFramebufferCreateInfo framebufferInfo = {};
 framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 framebufferInfo.renderPass = renderPass;
 framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
@@ -434,7 +434,7 @@ Comme nous avons plusieurs attachements avec `VK_ATTACHMENT_LOAD_OP_CLEAR`, nous
 suppression. Allez à `createCommandBuffers` et créez un tableau de `VkClearValue` :
 
 ```c++
-std::array<VkClearValue, 2> clearValues{};
+std::array<VkClearValue, 2> clearValues = {};
 clearValues[0].color = {0.0f, 0.0f, 0.0f, 1.0f};
 clearValues[1].depthStencil = {1.0f, 0};
 
@@ -452,7 +452,7 @@ L'attachement de profondeur est prêt à être utilisé, mais le test de profond
 configuré à l'aide d'une structure de type `VkPipelineDepthStencilStateCreateInfo`.
 
 ```c++
-VkPipelineDepthStencilStateCreateInfo depthStencil{};
+VkPipelineDepthStencilStateCreateInfo depthStencil = {};
 depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 depthStencil.depthTestEnable = VK_TRUE;
 depthStencil.depthWriteEnable = VK_TRUE;
@@ -472,8 +472,8 @@ Nous gardons le `<` car il correspond le mieux à la convention employée par Vu
 
 ```c++
 depthStencil.depthBoundsTestEnable = VK_FALSE;
-depthStencil.minDepthBounds = 0.0f; // Optionel
-depthStencil.maxDepthBounds = 1.0f; // Optionel
+depthStencil.minDepthBounds = 0.0f; // Optionnel
+depthStencil.maxDepthBounds = 1.0f; // Optionnel
 ```
 
 Les champs `depthBoundsTestEnable`, `minDepthBounds` et `maxDepthBounds` sont utilisés pour des tests optionnels
@@ -482,8 +482,8 @@ valeurs fournies ici. Nous n'utiliserons pas cette fonctionnalité.
 
 ```c++
 depthStencil.stencilTestEnable = VK_FALSE;
-depthStencil.front{}; // Optionel
-depthStencil.back{}; // Optionel
+depthStencil.front = {}; // Optionnel
+depthStencil.back = {}; // Optionnel
 ```
 
 Les trois derniers champs configurent les opérations du buffer de stencil, que nous n'utiliserons pas non plus dans ce
@@ -505,7 +505,7 @@ Si vous lancez le programme, vous verrez que la géométrie est maintenant corre
 ## Gestion des redimensionnements de la fenêtre
 
 La résolution du buffer de profondeur doit changer avec la fenêtre quand elle redimensionnée, pour pouvoir correspondre
-à la taille de l'attachement. Étendez `recreateSwapChain` pour regénérer les ressources :
+à la taille de l'attachement. Étendez `recreateSwapChain` pour régénérer les ressources :
 
 ```c++
 void recreateSwapChain() {
@@ -532,7 +532,7 @@ void recreateSwapChain() {
 }
 ```
 
-La libération des ressources doivent avoir lieu dans la fonction de libération de la swap chain.
+La libération des ressources doit avoir lieu dans la fonction de libération de la swap chain.
 
 ```c++
 void cleanupSwapChain() {
@@ -544,7 +544,7 @@ void cleanupSwapChain() {
 }
 ```
 
-Votre application est maintenant capable de rendre correctement de la géométrie 3D! Nous allons utliser cette
+Votre application est maintenant capable de rendre correctement de la géométrie 3D! Nous allons utiliser cette
 fonctionnalité pour afficher un modèle dans le prohain chapitre.
 
 [Code C++](/code/26_depth_buffering.cpp) /
