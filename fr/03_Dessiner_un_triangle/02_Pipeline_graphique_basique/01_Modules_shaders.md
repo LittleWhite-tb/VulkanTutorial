@@ -1,6 +1,6 @@
 À la différence d'anciens APIs, le code des shaders doit être fourni à Vulkan sous la forme de bytecode et non sous une
-forme facilement compréhensible par l'homme, comme [GLSL](https://en.wikipedia.org/wiki/OpenGL_Shading_langage) ou
-[HLSL](https://en.wikipedia.org/wiki/High-Level_Shading_langage). Ce format est appelé
+forme facilement compréhensible par l'homme, comme [GLSL](https://en.wikipedia.org/wiki/OpenGL_Shading_Language) ou
+[HLSL](https://en.wikipedia.org/wiki/High-Level_Shading_Language). Ce format est appelé
 [SPIR-V](https://www.khronos.org/spir) et est conçu pour fonctionner avec Vulkan et OpenCL (deux APIs de Khronos). Ce
 format peut servir à écrire du code éxécuté sur la carte graphique pour les graphismes et pour le calcul, mais nous 
 nous concentrerons sur la pipeline graphique dans ce tutoriel.
